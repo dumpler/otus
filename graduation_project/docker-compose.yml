@@ -1,0 +1,68 @@
+services:
+  office_booking_db:
+    image: postgres:16
+    container_name: office_booking_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: office_booking
+      POSTGRES_USER: office_booking_user
+      POSTGRES_PASSWORD: office_booking_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - office_booking_pgdata:/var/lib/postgresql/data
+      - ./db/main/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/scripts:/scripts:ro
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "max_logical_replication_workers=10"
+      - "-c"
+      - "max_worker_processes=16"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U office_booking_user -d office_booking"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  directory_db:
+    image: postgres:16
+    container_name: directory_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: directory_service
+      POSTGRES_USER: directory_user
+      POSTGRES_PASSWORD: directory_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - directory_pgdata:/var/lib/postgresql/data
+      - ./db/directory/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/scripts:/scripts:ro
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=10"
+      - "-c"
+      - "max_wal_senders=10"
+      - "-c"
+      - "max_logical_replication_workers=10"
+      - "-c"
+      - "max_worker_processes=16"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U directory_user -d directory_service"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  office_booking_pgdata:
+  directory_pgdata:
