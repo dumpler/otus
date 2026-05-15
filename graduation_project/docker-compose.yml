@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - office_booking_pgdata:/var/lib/postgresql/data
-      - ./db/main/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/main:/docker-entrypoint-initdb.d:ro
       - ./db/scripts:/scripts:ro
     command:
       - "postgres"
@@ -43,7 +43,7 @@ services:
       - "5433:5432"
     volumes:
       - directory_pgdata:/var/lib/postgresql/data
-      - ./db/directory/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./db/directory:/docker-entrypoint-initdb.d:ro
       - ./db/scripts:/scripts:ro
     command:
       - "postgres"
