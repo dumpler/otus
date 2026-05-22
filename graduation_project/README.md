@@ -161,4 +161,5 @@ docker compose exec -T office_booking_db psql -U office_booking_user -d office_b
 - `postgresql_features.md` - используемые возможности PostgreSQL
 - `demo_scenario.md` - пошаговый сценарий защиты
 - `er_model.svg` - ER-диаграмма проекта
-
+- [directory_service.svg](docs/directory_service.svg) - схема БД внешнего каталога
+- [office_booking.svg](docs/office_booking.svg) - схема БД бронирования офиса
