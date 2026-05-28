@@ -109,10 +109,7 @@ CREATE TABLE office.floor_plans (
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (floor_id, version),
-    CHECK (width_px > 0),
-    CHECK (height_px > 0),
-    CHECK (svg_content LIKE '%<svg%')
+    UNIQUE (floor_id, version)
 );
 
 CREATE TABLE office.workplace_map_points (
@@ -127,11 +124,7 @@ CREATE TABLE office.workplace_map_points (
     label TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (floor_plan_id, workplace_id),
-    CHECK (x_px >= 0),
-    CHECK (y_px >= 0),
-    CHECK (width_px > 0),
-    CHECK (height_px > 0)
+    UNIQUE (floor_plan_id, workplace_id)
 );
 
 CREATE TABLE booking.booking_statuses (
@@ -160,16 +153,7 @@ CREATE TABLE booking.bookings (
     cancelled_by_employee_id BIGINT REFERENCES office.employees(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    cancelled_at TIMESTAMPTZ,
-    CHECK (lower(booked_period) < upper(booked_period)),
-    CHECK (
-        (cancelled_at IS NULL AND cancellation_reason_id IS NULL)
-        OR (cancelled_at IS NOT NULL AND cancellation_reason_id IS NOT NULL)
-    ),
-    EXCLUDE USING gist (
-        workplace_id WITH =,
-        booked_period WITH &&
-    ) WHERE (status_id IN (1, 2))
+    cancelled_at TIMESTAMPTZ
 );
 
 CREATE TABLE booking.booking_status_history (
@@ -186,12 +170,7 @@ CREATE TABLE office.workplace_unavailability (
     workplace_id BIGINT NOT NULL REFERENCES office.workplaces(id),
     unavailable_period TSTZRANGE NOT NULL,
     reason TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CHECK (lower(unavailable_period) < upper(unavailable_period)),
-    EXCLUDE USING gist (
-        workplace_id WITH =,
-        unavailable_period WITH &&
-    )
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE audit.change_log (
