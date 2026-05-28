@@ -179,7 +179,7 @@ CREATE INDEX idx_audit_change_log_table ON audit.change_log(schema_name, table_n
 CREATE VIEW booking.active_bookings AS
 SELECT
     b.id,
-    e.full_name AS employee_name,
+    concat_ws(' ', e.last_name, e.first_name, e.middle_name) AS employee_name,
     e.email AS employee_email,
     o.name AS office_name,
     f.number AS floor_number,
@@ -196,4 +196,3 @@ JOIN office.floors f ON f.id = z.floor_id
 JOIN office.offices o ON o.id = f.office_id
 JOIN booking.booking_statuses bs ON bs.id = b.status_id
 WHERE bs.code IN ('created', 'confirmed');
-

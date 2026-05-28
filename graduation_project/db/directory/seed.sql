@@ -19,40 +19,52 @@ VALUES
 
 INSERT INTO office.employees (
     id,
-    external_id,
     email,
-    full_name,
+    last_name,
+    first_name,
+    middle_name,
     department_code,
     position_name
 )
 SELECT
     id,
-    external_id,
     email,
-    full_name,
+    last_name,
+    first_name,
+    middle_name,
     department_code,
     position_name
 FROM (
     VALUES
-        (1, 'ad-1001', 'ivan.petrov@example.com', 'Ivan Petrov', 'it', 'Backend Developer'),
-        (2, 'ad-1002', 'anna.smirnova@example.com', 'Anna Smirnova', 'hr', 'HR Manager'),
-        (3, 'ad-1003', 'pavel.ivanov@example.com', 'Pavel Ivanov', 'finance', 'Financial Analyst'),
-        (4, 'ad-1004', 'olga.sokolova@example.com', 'Olga Sokolova', 'sales', 'Sales Manager'),
-        (5, 'ad-1005', 'maria.kuznetsova@example.com', 'Maria Kuznetsova', 'product', 'QA Engineer')
+        (1, 'ivan.petrov@example.com', 'Petrov', 'Ivan', 'Petrovich', 'it', 'Backend Developer'),
+        (2, 'anna.smirnova@example.com', 'Smirnova', 'Anna', 'Ivanovich', 'hr', 'HR Manager'),
+        (3, 'pavel.ivanov@example.com', 'Ivanov', 'Pavel', 'Pavlovich', 'finance', 'Financial Analyst'),
+        (4, 'olga.sokolova@example.com', 'Sokolova', 'Olga', 'Andreevich', 'sales', 'Sales Manager'),
+        (5, 'maria.kuznetsova@example.com', 'Kuznetsova', 'Maria', 'Igorevich', 'product', 'QA Engineer')
 ) AS seed_employees(
     id,
-    external_id,
     email,
-    full_name,
+    last_name,
+    first_name,
+    middle_name,
     department_code,
     position_name
 )
 UNION ALL
 SELECT
     employee_number AS id,
-    'ad-' || (1000 + employee_number)::TEXT AS external_id,
     'employee' || lpad(employee_number::TEXT, 3, '0') || '@example.com' AS email,
-    'Employee ' || lpad(employee_number::TEXT, 3, '0') AS full_name,
+    'Employee' AS last_name,
+    lpad(employee_number::TEXT, 3, '0') AS first_name,
+    (
+        ARRAY[
+            'Petrovich',
+            'Ivanovich',
+            'Pavlovich',
+            'Andreevich',
+            'Igorevich'
+        ]
+    )[1 + ((employee_number - 1) % 5)] AS middle_name,
     department_code,
     CASE department_code
         WHEN 'it' THEN 'Software Engineer'

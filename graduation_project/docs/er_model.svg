@@ -68,8 +68,8 @@
     <rect class="head-dir" x="60" y="490" width="245" height="32" rx="8"/>
     <text class="title" x="75" y="511">office.employees</text>
     <text class="field pk" x="75" y="542">PK id</text>
-    <text class="field" x="75" y="564">external_id, email</text>
-    <text class="field" x="75" y="586">full_name</text>
+    <text class="field" x="75" y="564">email</text>
+    <text class="field" x="75" y="586">last_name, first_name, middle_name</text>
     <text class="field fk" x="75" y="608">FK department_code</text>
   </g>
 
@@ -105,8 +105,8 @@
     <rect class="head-office" x="430" y="490" width="240" height="32" rx="8"/>
     <text class="title" x="445" y="511">office.employees</text>
     <text class="field pk" x="445" y="542">PK id</text>
-    <text class="field" x="445" y="564">external_id, email</text>
-    <text class="field" x="445" y="586">full_name</text>
+    <text class="field" x="445" y="564">email</text>
+    <text class="field" x="445" y="586">last_name, first_name, middle_name</text>
     <text class="field fk" x="445" y="608">FK department_code</text>
   </g>
 
@@ -125,7 +125,7 @@
     <text class="title" x="725" y="191">office.offices</text>
     <text class="field pk" x="725" y="222">PK id</text>
     <text class="field" x="725" y="244">code, name</text>
-    <text class="field" x="725" y="266">city, address</text>
+    <text class="field" x="725" y="266">address</text>
   </g>
 
   <g id="floors">

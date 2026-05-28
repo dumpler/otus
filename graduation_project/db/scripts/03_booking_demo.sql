@@ -13,9 +13,10 @@ RESTART IDENTITY CASCADE;
 -- Эти данные пришли из внешнего каталога directory_db через логическую репликацию
 SELECT
     e.id,
-    e.external_id,
     e.email,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.department_code,
     d.name AS department_name,
     e.position_name,
@@ -26,9 +27,10 @@ LEFT JOIN office.departments d ON d.code = e.department_code
 LEFT JOIN office.employee_roles er ON er.employee_id = e.id
 GROUP BY
     e.id,
-    e.external_id,
     e.email,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.department_code,
     d.name,
     e.position_name,
@@ -86,7 +88,7 @@ SELECT
 FROM office.employees e
 CROSS JOIN office.workplaces w
 CROSS JOIN booking.booking_statuses bs
-WHERE e.external_id = 'ad-1001'
+WHERE e.id = 1
   AND w.code = 'A-501'
   AND bs.code = 'confirmed'
 ON CONFLICT DO NOTHING;
@@ -113,7 +115,7 @@ BEGIN
     FROM office.employees e
     CROSS JOIN office.workplaces w
     CROSS JOIN booking.booking_statuses bs
-    WHERE e.external_id = 'ad-1002'
+    WHERE e.id = 2
       AND w.code = 'A-501'
       AND bs.code = 'confirmed';
 EXCEPTION
@@ -158,7 +160,7 @@ BEGIN
     FROM office.employees e
     CROSS JOIN office.workplaces w
     CROSS JOIN booking.booking_statuses bs
-    WHERE e.external_id = 'ad-1002'
+    WHERE e.id = 2
       AND w.code = 'A-502'
       AND bs.code = 'created';
 EXCEPTION
@@ -187,7 +189,7 @@ SELECT
 FROM office.employees e
 CROSS JOIN office.workplaces w
 CROSS JOIN booking.booking_statuses bs
-WHERE e.external_id = 'ad-1005'
+WHERE e.id = 5
   AND w.code = 'Q-501'
   AND bs.code = 'confirmed';
 
@@ -248,4 +250,3 @@ SELECT
     changed_at
 FROM audit.change_log
 ORDER BY id;
-

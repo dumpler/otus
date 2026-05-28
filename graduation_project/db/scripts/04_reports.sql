@@ -4,7 +4,9 @@
 -- 1. Реплицированные сотрудники с отделами и ролями
 SELECT
     e.id,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.email,
     d.name AS department_name,
     e.position_name,
@@ -15,7 +17,9 @@ LEFT JOIN office.departments d ON d.code = e.department_code
 LEFT JOIN office.employee_roles er ON er.employee_id = e.id
 GROUP BY
     e.id,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.email,
     d.name,
     e.position_name,
@@ -134,4 +138,3 @@ SELECT
     changed_at
 FROM audit.change_log
 ORDER BY id;
-

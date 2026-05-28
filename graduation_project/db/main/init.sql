@@ -15,9 +15,10 @@ CREATE TABLE office.departments (
 
 CREATE TABLE office.employees (
     id BIGINT PRIMARY KEY,
-    external_id TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    full_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    middle_name TEXT,
     department_code TEXT REFERENCES office.departments(code),
     position_name TEXT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -46,7 +47,6 @@ CREATE TABLE office.offices (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     code TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
-    city TEXT NOT NULL,
     address TEXT NOT NULL,
     timezone TEXT NOT NULL DEFAULT 'Europe/Moscow',
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -205,4 +205,3 @@ CREATE TABLE audit.change_log (
     changed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     changed_by TEXT NOT NULL DEFAULT current_user
 );
-

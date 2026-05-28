@@ -48,24 +48,30 @@ SET
 -- Сотрудник ссылается на новый отдел product
 INSERT INTO office.employees (
     id,
-    external_id,
     email,
-    full_name,
+    last_name,
+    first_name,
+    middle_name,
     department_code,
-    position_name
+    position_name,
+    source_updated_at
 )
 VALUES (
     5,
-    'ad-1005',
     'maria.kuznetsova@example.com',
-    'Maria Kuznetsova',
+    'Kuznetsova',
+    'Maria',
+    'Igorevich',
     'product',
-    'QA Engineer'
+    'QA Engineer',
+    now()
 )
 ON CONFLICT (id) DO UPDATE
 SET
     email = EXCLUDED.email,
-    full_name = EXCLUDED.full_name,
+    last_name = EXCLUDED.last_name,
+    first_name = EXCLUDED.first_name,
+    middle_name = EXCLUDED.middle_name,
     department_code = EXCLUDED.department_code,
     position_name = EXCLUDED.position_name,
     is_active = TRUE,
@@ -77,15 +83,15 @@ UPDATE office.employees
 SET
     position_name = 'Senior Backend Developer',
     source_updated_at = now()
-WHERE external_id = 'ad-1001';
+WHERE id = 1;
 
 -- Деактивируем сотрудника вместо физического удаления
--- Такой подход типичен для справочников пользователей из AD/LDAP
+-- Такой подход типичен для справочников пользователей
 UPDATE office.employees
 SET
     is_active = FALSE,
     source_updated_at = now()
-WHERE external_id = 'ad-1003';
+WHERE id = 3;
 
 -- Удаляем назначение роли у сотрудника
 -- Так показываем репликацию DELETE на связующей таблице employee_roles
@@ -123,9 +129,10 @@ ORDER BY id;
 -- По этому результату удобно сравнивать данные с основной БД после репликации
 SELECT
     e.id,
-    e.external_id,
     e.email,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.department_code,
     d.name AS department_name,
     e.position_name,
@@ -136,12 +143,12 @@ LEFT JOIN office.departments d ON d.code = e.department_code
 LEFT JOIN office.employee_roles er ON er.employee_id = e.id
 GROUP BY
     e.id,
-    e.external_id,
     e.email,
-    e.full_name,
+    e.last_name,
+    e.first_name,
+    e.middle_name,
     e.department_code,
     d.name,
     e.position_name,
     e.is_active
 ORDER BY e.id;
-

@@ -6,18 +6,20 @@ DO $$
 BEGIN
     INSERT INTO office.employees (
         id,
-        external_id,
         email,
-        full_name,
+        last_name,
+        first_name,
+        middle_name,
         department_code,
         position_name,
         source_updated_at
     )
     VALUES (
         999,
-        'bad-department-user',
         'bad.department@example.com',
-        'Bad Department User',
+        'User',
+        'Bad',
+        'Department',
         'missing_department',
         'Test user',
         now()
@@ -49,7 +51,7 @@ BEGIN
     FROM office.employees e
     CROSS JOIN office.workplaces w
     CROSS JOIN booking.booking_statuses bs
-    WHERE e.external_id = 'ad-1003'
+    WHERE e.id = 3
       AND w.code = 'A-501'
       AND bs.code = 'confirmed';
 EXCEPTION
@@ -79,7 +81,7 @@ BEGIN
     FROM office.employees e
     CROSS JOIN office.workplaces w
     CROSS JOIN booking.booking_statuses bs
-    WHERE e.external_id = 'ad-1001'
+    WHERE e.id = 1
       AND w.code = 'A-501'
       AND bs.code = 'confirmed';
 EXCEPTION
@@ -143,4 +145,3 @@ EXCEPTION
         RAISE NOTICE 'Ожидаемая ошибка: некорректные координаты точки рабочего места отклонены';
 END;
 $$;
-

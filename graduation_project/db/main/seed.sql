@@ -17,8 +17,8 @@ VALUES
     ('admin_cancelled', 'Cancelled by administrator'),
     ('workplace_unavailable', 'Workplace became unavailable');
 
-INSERT INTO office.offices (code, name, city, address)
-VALUES ('msk_main', 'Moscow Main Office', 'Moscow', 'Tverskaya street, 1');
+INSERT INTO office.offices (code, name, address)
+VALUES ('msk_main', 'Moscow Main Office', 'Moscow, Tverskaya street, 1');
 
 INSERT INTO office.floors (office_id, number, name)
 SELECT id, 5, 'Fifth floor'
