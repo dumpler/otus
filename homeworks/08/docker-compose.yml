@@ -1,0 +1,82 @@
+services:
+  primary:
+    image: postgres:16
+    container_name: homework_08_primary
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_wal_senders=10
+      - -c
+      - max_replication_slots=10
+      - -c
+      - max_logical_replication_workers=10
+      - -c
+      - listen_addresses=*
+    ports:
+      - "5432:5432"
+    volumes:
+      - homework_08_primary_data:/var/lib/postgresql/data
+      - ./primary-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  physical_replica:
+    image: postgres:16
+    container_name: homework_08_physical_replica
+    environment:
+      PRIMARY_HOST: primary
+      PRIMARY_PORT: 5432
+      REPLICATION_USER: replicator
+      REPLICATION_PASSWORD: replicator
+      REPLICATION_SLOT: physical_replica_slot
+    entrypoint: ["/usr/local/bin/physical-replica-entrypoint.sh"]
+    ports:
+      - "5433:5432"
+    volumes:
+      - homework_08_physical_replica_data:/var/lib/postgresql/data
+      - ./scripts/physical-replica-entrypoint.sh:/usr/local/bin/physical-replica-entrypoint.sh:ro
+    depends_on:
+      primary:
+        condition: service_healthy
+
+  logical_replica:
+    image: postgres:16
+    container_name: homework_08_logical_replica
+    environment:
+      POSTGRES_DB: replication_demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=10
+      - -c
+      - max_logical_replication_workers=10
+      - -c
+      - listen_addresses=*
+    ports:
+      - "5434:5432"
+    volumes:
+      - homework_08_logical_replica_data:/var/lib/postgresql/data
+      - ./logical-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d replication_demo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  homework_08_primary_data:
+  homework_08_physical_replica_data:
+  homework_08_logical_replica_data:
