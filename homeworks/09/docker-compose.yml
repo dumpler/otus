@@ -1,0 +1,18 @@
+services:
+  otusdb:
+    image: mysql:8.0.15
+    container_name: homework_09_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+    command:
+      - --init-file
+      - /init.sql
+    volumes:
+      - homework_09_mysql_data:/var/lib/mysql
+      - ./init.sql:/init.sql:ro
+      - ./custom.conf:/etc/mysql/conf.d:ro
+    ports:
+      - "3309:3306"
+
+volumes:
+  homework_09_mysql_data:
