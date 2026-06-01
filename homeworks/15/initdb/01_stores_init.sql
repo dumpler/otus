@@ -11,7 +11,10 @@ CREATE TABLE stores (
 
 CREATE TABLE sales (
     sale_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    store_id BIGINT REFERENCES stores (store_id),
+    store_id BIGINT UNSIGNED NOT NULL,
     date TIMESTAMP NOT NULL,
-    sale_amount DECIMAL(10,2) NOT NULL
+    sale_amount DECIMAL(10,2) NOT NULL,
+    CONSTRAINT fk_sales_store
+        FOREIGN KEY (store_id)
+        REFERENCES stores (store_id)
 );

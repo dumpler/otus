@@ -1,6 +1,8 @@
 SET SESSION cte_max_recursion_depth = 100000;
 USE stores_data;
 
+DROP PROCEDURE IF EXISTS seed_data;
+
 DELIMITER //
 
 CREATE PROCEDURE seed_data()
