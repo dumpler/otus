@@ -1,0 +1,3 @@
+USE world;
+
+ALTER TABLE city IMPORT TABLESPACE;
