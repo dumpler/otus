@@ -1,0 +1,68 @@
+services:
+  pxc1:
+    image: percona/percona-xtradb-cluster:8.0
+    container_name: homework_20_pxc1
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+      CLUSTER_NAME: "office_booking_pxc"
+      XTRABACKUP_PASSWORD: "backup_pass"
+    command:
+      - --pxc-encrypt-cluster-traffic=ON
+      - --ssl-ca=/etc/mysql/ssl/ca.crt
+      - --ssl-cert=/etc/mysql/ssl/tls.crt
+      - --ssl-key=/etc/mysql/ssl/tls.key
+    ports:
+      - "3321:3306"
+    volumes:
+      - homework_20_pxc1_data:/var/lib/mysql
+      - ./ssl:/etc/mysql/ssl:ro
+      - ./config/ssl.cnf:/etc/my.cnf.d/ssl.cnf:ro
+
+  pxc2:
+    image: percona/percona-xtradb-cluster:8.0
+    container_name: homework_20_pxc2
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+      CLUSTER_NAME: "office_booking_pxc"
+      CLUSTER_JOIN: "pxc1"
+      XTRABACKUP_PASSWORD: "backup_pass"
+    command:
+      - --pxc-encrypt-cluster-traffic=ON
+      - --ssl-ca=/etc/mysql/ssl/ca.crt
+      - --ssl-cert=/etc/mysql/ssl/tls.crt
+      - --ssl-key=/etc/mysql/ssl/tls.key
+    ports:
+      - "3322:3306"
+    volumes:
+      - homework_20_pxc2_data:/var/lib/mysql
+      - ./ssl:/etc/mysql/ssl:ro
+      - ./config/ssl.cnf:/etc/my.cnf.d/ssl.cnf:ro
+    depends_on:
+      - pxc1
+
+  pxc3:
+    image: percona/percona-xtradb-cluster:8.0
+    container_name: homework_20_pxc3
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+      CLUSTER_NAME: "office_booking_pxc"
+      CLUSTER_JOIN: "pxc1"
+      XTRABACKUP_PASSWORD: "backup_pass"
+    command:
+      - --pxc-encrypt-cluster-traffic=ON
+      - --ssl-ca=/etc/mysql/ssl/ca.crt
+      - --ssl-cert=/etc/mysql/ssl/tls.crt
+      - --ssl-key=/etc/mysql/ssl/tls.key
+    ports:
+      - "3323:3306"
+    volumes:
+      - homework_20_pxc3_data:/var/lib/mysql
+      - ./ssl:/etc/mysql/ssl:ro
+      - ./config/ssl.cnf:/etc/my.cnf.d/ssl.cnf:ro
+    depends_on:
+      - pxc1
+
+volumes:
+  homework_20_pxc1_data:
+  homework_20_pxc2_data:
+  homework_20_pxc3_data:

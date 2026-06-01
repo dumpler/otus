@@ -1,0 +1,5 @@
+[mysqld]
+pxc-encrypt-cluster-traffic=ON
+ssl-ca=/etc/mysql/ssl/ca.crt
+ssl-cert=/etc/mysql/ssl/tls.crt
+ssl-key=/etc/mysql/ssl/tls.key
