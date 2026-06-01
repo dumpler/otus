@@ -1,0 +1,31 @@
+services:
+  mysql-source:
+    image: mysql:8.0
+    container_name: homework_19_mysql_source
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3319:3306"
+    volumes:
+      - homework_19_source_data:/var/lib/mysql
+      - ./config/source.cnf:/etc/mysql/conf.d/source.cnf:ro
+      - ./source-init:/docker-entrypoint-initdb.d:ro
+
+  mysql-replica:
+    image: mysql:8.0
+    container_name: homework_19_mysql_replica
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3320:3306"
+    volumes:
+      - homework_19_replica_data:/var/lib/mysql
+      - ./config/replica.cnf:/etc/mysql/conf.d/replica.cnf:ro
+    depends_on:
+      - mysql-source
+
+volumes:
+  homework_19_source_data:
+  homework_19_replica_data:
