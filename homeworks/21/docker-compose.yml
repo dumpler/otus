@@ -1,0 +1,12 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: homework_21_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - homework_21_mongodb_data:/data/db
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  homework_21_mongodb_data:
