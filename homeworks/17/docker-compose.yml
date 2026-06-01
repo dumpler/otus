@@ -1,0 +1,14 @@
+services:
+  otusdb:
+    image: mysql:8.0
+    container_name: homework_17_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+    ports:
+      - "3309:3306"
+    volumes:
+      - homework_17_mysql_data:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  homework_17_mysql_data:
