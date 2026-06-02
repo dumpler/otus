@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1050" viewBox="0 0 1700 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Архитектура и логическая репликация office_booking</title>
+  <desc id="desc">Схема показывает внешний каталог directory_service, основную базу office_booking, публикации, подписки и поток логической репликации</desc>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="12" markerHeight="12" refX="2" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#dc2626"/>
+    </marker>
+    <style>
+      .page { fill: #f8fafc; }
+      .title { font: 700 30px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 400 16px Arial, sans-serif; fill: #4b5563; }
+      .panel-source { fill: #ecfdf5; stroke: #10b981; stroke-width: 2; rx: 16; }
+      .panel-main { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 16; }
+      .panel-flow { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 16; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; }
+      .pub { fill: #dcfce7; stroke: #16a34a; stroke-width: 1.5; rx: 10; }
+      .sub { fill: #dbeafe; stroke: #2563eb; stroke-width: 1.5; rx: 10; }
+      .local { fill: #fef3c7; stroke: #d97706; stroke-width: 1.5; rx: 10; }
+      .audit { fill: #fce7f3; stroke: #db2777; stroke-width: 1.5; rx: 10; }
+      .h1 { font: 700 21px Arial, sans-serif; fill: #111827; }
+      .h2 { font: 700 16px Arial, sans-serif; fill: #1f2937; }
+      .text { font: 400 14px Arial, sans-serif; fill: #374151; }
+      .small { font: 400 13px Arial, sans-serif; fill: #475569; }
+      .code { font: 400 14px Consolas, monospace; fill: #111827; }
+      .flow { stroke: #dc2626; stroke-width: 3.5; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 12 8; }
+      .fk { stroke: #2563eb; stroke-width: 2.5; fill: none; marker-end: url(#arrow-blue); }
+      .note-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+    </style>
+  </defs>
+
+  <rect class="page" x="0" y="0" width="1700" height="1050"/>
+
+  <text class="title" x="60" y="55">Архитектура и логическая репликация</text>
+  <text class="subtitle" x="60" y="84">Отдельная база directory_service имитирует внешний каталог, office_booking получает справочники через логическую репликацию PostgreSQL</text>
+
+  <rect class="panel-flow" x="60" y="115" width="1580" height="86"/>
+  <text class="h2" x="90" y="148">Docker Compose</text>
+  <text class="code" x="260" y="148">directory_db</text>
+  <text class="small" x="380" y="148">PostgreSQL 16, database directory_service, localhost:5433</text>
+  <text class="code" x="260" y="176">office_booking_db</text>
+  <text class="small" x="430" y="176">PostgreSQL 16, database office_booking, localhost:5432</text>
+  <text class="small" x="1040" y="148">Внутри docker-сети подписки подключаются к host=directory_db port=5432</text>
+
+  <rect class="panel-source" x="60" y="245" width="530" height="575"/>
+  <text class="h1" x="95" y="285">directory_db</text>
+  <text class="small" x="95" y="310">Источник справочников сотрудников</text>
+
+  <rect class="card" x="95" y="345" width="460" height="170"/>
+  <text class="h2" x="125" y="380">schema office</text>
+  <text class="code" x="125" y="415">office.departments</text>
+  <text class="code" x="125" y="445">office.roles</text>
+  <text class="code" x="125" y="475">office.employees</text>
+  <text class="code" x="125" y="505">office.employee_roles</text>
+
+  <rect class="pub" x="95" y="555" width="460" height="210"/>
+  <text class="h2" x="125" y="590">Публикации</text>
+  <text class="code" x="125" y="625">directory_departments_publication</text>
+  <text class="code" x="125" y="655">directory_roles_publication</text>
+  <text class="code" x="125" y="685">directory_employees_publication</text>
+  <text class="code" x="125" y="715">directory_employee_roles_publication</text>
+  <text class="small" x="125" y="750">Создаются при старте из db/directory/zz_publications.sql</text>
+
+  <rect class="panel-flow" x="650" y="245" width="400" height="575"/>
+  <text class="h1" x="690" y="285">Поток репликации</text>
+
+  <rect class="card" x="690" y="330" width="320" height="80"/>
+  <text class="h2" x="720" y="363">1. Publication</text>
+  <text class="small" x="720" y="390">Источник отдает изменения выбранных таблиц</text>
+
+  <rect class="card" x="690" y="455" width="320" height="80"/>
+  <text class="h2" x="720" y="488">2. Replication slot</text>
+  <text class="small" x="720" y="515">PostgreSQL хранит позицию чтения WAL</text>
+
+  <rect class="card" x="690" y="580" width="320" height="80"/>
+  <text class="h2" x="720" y="613">3. Subscription</text>
+  <text class="small" x="720" y="640">Основная база применяет изменения</text>
+
+  <rect class="card" x="690" y="705" width="320" height="65"/>
+  <text class="h2" x="720" y="738">copy_data = true</text>
+  <text class="small" x="720" y="760">Первичная загрузка при создании подписки</text>
+
+  <path class="note-line" d="M850 410 V455"/>
+  <path class="note-line" d="M850 535 V580"/>
+  <path class="note-line" d="M850 660 V705"/>
+
+  <rect class="panel-main" x="1110" y="245" width="530" height="575"/>
+  <text class="h1" x="1145" y="285">office_booking_db</text>
+  <text class="small" x="1145" y="310">Основная база системы бронирования</text>
+
+  <rect class="sub" x="1145" y="345" width="460" height="170"/>
+  <text class="h2" x="1175" y="380">Подписки</text>
+  <text class="code" x="1175" y="412">directory_departments_subscription</text>
+  <text class="code" x="1175" y="442">directory_roles_subscription</text>
+  <text class="code" x="1175" y="472">directory_employees_subscription</text>
+  <text class="code" x="1175" y="502">directory_employee_roles_subscription</text>
+
+  <path class="flow" d="M555 660 C610 660 615 370 662 370"/>
+  <path class="flow" d="M1010 620 C1080 620 1080 420 1117 420"/>
+
+  <rect class="card" x="1145" y="545" width="210" height="180"/>
+  <text class="h2" x="1175" y="580">office</text>
+  <text class="small" x="1175" y="610">реплицируемые справочники</text>
+  <text class="small" x="1175" y="638">локальные офисы</text>
+  <text class="small" x="1175" y="666">этажи, зоны</text>
+  <text class="small" x="1175" y="694">рабочие места и SVG-планы</text>
+
+  <rect class="local" x="1395" y="545" width="210" height="180"/>
+  <text class="h2" x="1425" y="580">booking</text>
+  <text class="small" x="1425" y="610">бронирования</text>
+  <text class="small" x="1425" y="638">статусы</text>
+  <text class="small" x="1425" y="666">история статусов</text>
+  <text class="small" x="1425" y="694">запрет пересечений</text>
+
+  <rect class="audit" x="1145" y="755" width="460" height="45"/>
+  <text class="h2" x="1175" y="784">audit.change_log</text>
+  <text class="small" x="1340" y="784">пишется триггерами основной БД</text>
+
+  <path class="fk" d="M1355 635 H1395"/>
+  <path class="fk" d="M1500 725 V755"/>
+
+  <rect class="panel-flow" x="60" y="860" width="1580" height="120"/>
+  <text class="h2" x="90" y="895">Порядок демонстрации</text>
+  <text class="code" x="90" y="930">1. docker compose up -d</text>
+  <text class="code" x="430" y="930">2. /scripts/01_setup_replication.sql</text>
+  <text class="code" x="860" y="930">3. /scripts/02_directory_changes.sql</text>
+  <text class="code" x="1230" y="930">4. /scripts/03_booking_demo.sql</text>
+  <text class="small" x="90" y="960">Сначала создаются подписки и выполняется первичная загрузка, затем изменения в directory_db доезжают в office_booking_db автоматически</text>
+</svg>
